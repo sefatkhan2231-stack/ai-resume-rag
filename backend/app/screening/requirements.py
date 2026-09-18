@@ -1,7 +1,6 @@
-import ollama
 import json
 
-MODEL_NAME = "llama3.2"
+from app.services.llm_service import generate
 
 def extract_job_requirements(job_description: str) -> dict:
     prompt = f"""
@@ -28,15 +27,13 @@ Rules:
 JOB DESCRIPTION:
 {job_description}
 """
-    response = ollama.chat(
-        model=MODEL_NAME,
-        messages=[
-            {"role": "system", "content": "You extract structured job requirements. Return valid JSON only."},
-            {"role": "user", "content": prompt},
-        ],
-        options={"temperature": 0},
+    content = generate(
+        system_prompt=(
+            "You extract structure job requirements."
+            "Return valid JSON only."
+        ),
+        user_prompt=prompt,
     )
-    content = response["message"]["content"]
     return json.loads(content)
 
 

@@ -16,11 +16,13 @@ class Settings(BaseSettings):
     DATABASE_PATH: str = "./storage/app.db"
 
     # --- LLM ---
+    LLM_PROVIDER: str = "ollama"
     OLLAMA_MODEL: str = "llama3.2"
 
     # --- Optional keys, kept for future providers ---
     OPENAI_API_KEY: str | None = None
     HF_TOKEN: str | None = None
+    HF_MODEL: str = "Qwen/Qwen2.5-7B-Instruct"
 
 
 @lru_cache
