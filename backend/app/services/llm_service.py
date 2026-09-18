@@ -42,6 +42,7 @@ def generate_with_huggingface(
         )
 
     client = InferenceClient(
+        provider="featherless-ai",
         api_key=settings.HF_TOKEN,
     )
 
