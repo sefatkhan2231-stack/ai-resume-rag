@@ -42,7 +42,7 @@ def generate_with_huggingface(
         )
 
     client = InferenceClient(
-        provider="hf-inference",
+        provider="together",
         api_key=settings.HF_TOKEN,
     )
 
