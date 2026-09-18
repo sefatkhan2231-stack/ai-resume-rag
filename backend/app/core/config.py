@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     # --- Optional keys, kept for future providers ---
     OPENAI_API_KEY: str | None = None
     HF_TOKEN: str | None = None
-    HF_MODEL: str = "Qwen/Qwen2.5-7B-Instruct"
+    HF_MODEL: str = "Qwen/Qwen2.5-3B-Instruct"
 
 
 @lru_cache
