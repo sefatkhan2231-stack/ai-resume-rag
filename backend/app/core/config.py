@@ -8,7 +8,7 @@ class Settings(BaseSettings):
 
     # --- General ---
     APP_NAME: str = "AI Resume Screening API"
-    FRONTEND_URL: str = "http://localhost:5173"
+    FRONTEND_URL: str = "https://ai-resume-rag-rho.vercel.app"
 
     # --- Storage ---
     UPLOAD_DIR: str = "./storage/uploads"
