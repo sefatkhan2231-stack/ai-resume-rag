@@ -33,7 +33,7 @@ def generate_with_ollama(
 
 def generate_with_huggingface(
         system_prompt: str,
-        user_propmpt: str,
+        user_prompt: str,
 ) -> str:
 
     if not settings.HF_TOKEN:
@@ -55,10 +55,11 @@ def generate_with_huggingface(
             },
             {
                 "role": "user",
-                "content": user_propmpt,
+                "content": user_prompt,
             },
         ],
         temperature=0,
+        max_tokens=1000,
     )
 
     return response.choices[0].message.content
