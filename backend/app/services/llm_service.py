@@ -42,11 +42,12 @@ def generate_with_huggingface(
         )
 
     client = InferenceClient(
-        model=settings.HF_MODEL,
-        token=settings.HF_TOKEN,
+        provider="hf-inference",
+        api_key=settings.HF_TOKEN,
     )
 
     response = client.chat.completions.create(
+        model=settings.HF_MODEL,
         messages=[
             {
                 "role": "system",
