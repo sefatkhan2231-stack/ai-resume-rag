@@ -135,10 +135,12 @@ def check_skill(skill: str, candidate_id: str = None) -> dict:
 
         if exact_skill_match(normalized_skill, document):
             verified_evidence.append(item)
+            print(verified_evidence)
             continue
 
         if verify_skill_llm(normalized_skill, document):
             verified_evidence.append(item)
+            print(verified_evidence)
 
     return {
         "skill": original_skill,
