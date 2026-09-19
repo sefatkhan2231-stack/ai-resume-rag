@@ -1,31 +1,77 @@
-import json
+from typing import TypedDict
 
 from app.services.llm_service import generate
 
 
-def extract_job_requirements(job_description: str) -> dict:
+class JobRequirements(TypedDict):
+    skills: list[str]
+    tools: list[str]
+    frameworks: list[str]
+    databases: list[str]
+    soft_skills: list[str]
+
+response_schema = {
+    "type": "object",
+    "properties": {
+        "skills": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "tools": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "frameworks": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "databases": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "soft_skills": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "required": [
+        "skills",
+        "tools",
+        "frameworks",
+        "databases",
+        "soft_skills"
+    ],
+    "additionalProperties": False
+}
+
+
+def extract_job_requirements(
+    job_description: str
+) -> JobRequirements:
 
     prompt = f"""
-You are a job description analysis assistant.
-
-Extract EVERY explicit requirement from the job description.
-
-Return ONLY valid JSON with exactly this structure:
-
-{{
-    "skills": [],
-    "tools": [],
-    "frameworks": [],
-    "databases": [],
-    "soft_skills": []
-}}
+Extract EVERY explicit requirement from this job description.
 
 Rules:
-- Extract EVERY explicit requirement.
-- Never infer or add implied requirements.
-- Do not merge related requirements.
-- soft_skills must only contain explicitly stated soft skills.
-- Do not add explanations outside the JSON.
+- Only extract requirements explicitly stated.
+- Never infer requirements.
+- Do not add implied skills.
+- Do not merge unrelated requirements.
+- Put programming languages and technical concepts in skills.
+- Put named development tools in tools.
+- Put frameworks/libraries in frameworks.
+- Put databases in databases.
+- Put explicitly stated soft skills in soft_skills.
 
 JOB DESCRIPTION:
 
@@ -34,22 +80,25 @@ JOB DESCRIPTION:
 
     content = generate(
         system_prompt=(
-            "You extract structured job requirements. "
-            "Return valid JSON only."
+            "You extract structured job requirements "
+            "from job descriptions."
         ),
         user_prompt=prompt,
+        response_schema=response_schema,
     )
 
     print("===== REQUIREMENTS LLM RESPONSE =====")
-    print(repr(content))
+    print(content)
     print("===== END REQUIREMENTS RESPONSE =====")
 
-    content = content.strip()
+    import json
 
     return json.loads(content)
 
 
-def flatten_requirements(requirements: dict) -> list:
+def flatten_requirements(
+    requirements: JobRequirements
+) -> list[str]:
 
     flat = []
 

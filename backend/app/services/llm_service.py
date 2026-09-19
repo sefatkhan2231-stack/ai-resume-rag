@@ -35,6 +35,7 @@ def generate_with_ollama(
 def generate_with_gemini(
     system_prompt: str,
     user_prompt: str,
+    response_schema=None,
 ) -> str:
 
     if not settings.GEMINI_API_KEY:
@@ -46,20 +47,29 @@ def generate_with_gemini(
         api_key=settings.GEMINI_API_KEY
     )
 
-    response = client.models.generate_content(
+    config = client.models.generate_content(
         model=settings.GEMINI_MODEL,
         contents=user_prompt,
         config=types.GenerateContentConfig(
             system_instruction=system_prompt,
             temperature=0,
             max_output_tokens=1000,
-            response_mime_type="application/json",
             automatic_function_calling=(
                 types.AutomaticFunctionCallingConfig(
                     disable=True
                 )
             ),
         ),
+    )
+
+    if response_schema:
+        config.response_mime_type = "application/json"
+        config.response_schema = response_schema
+
+    response = client.models.generate_content(
+        model=settings.GEMINI_MODEL,
+        contents=user_prompt,
+        config=config,
     )
 
     if not response.text:
@@ -73,12 +83,14 @@ def generate_with_gemini(
 def generate(
     system_prompt: str,
     user_prompt: str,
+    response_schema=None,
 ) -> str:
 
     if settings.LLM_PROVIDER == "gemini":
         return generate_with_gemini(
             system_prompt,
             user_prompt,
+            response_schema=response_schema,
         )
 
     return generate_with_ollama(
