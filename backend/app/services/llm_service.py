@@ -1,6 +1,7 @@
 import json
 
 from google import genai
+from google.genai import types
 import ollama
 
 from app.core.config import get_settings
@@ -48,12 +49,20 @@ def generate_with_gemini(
     response = client.models.generate_content(
         model=settings.GEMINI_MODEL,
         contents=user_prompt,
-        config={
-            "system_instruction": system_prompt,
-            "temperature": 0,
-            "max_output_tokens": 1000,
-        },
+        config=types.GenerateContentConfig(
+            system_instruction=system_prompt,
+            temperature=0,
+            max_output_tokens=1000,
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(
+                disable=True
+            ),
+        ),
     )
+
+    if not response.text:
+        raise RuntimeError(
+            "Gemini returned an empty response."
+        )
 
     return response.text
 
