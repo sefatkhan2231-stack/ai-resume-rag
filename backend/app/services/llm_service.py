@@ -1,8 +1,7 @@
 import json
 
-import ollama
-
 from google import genai
+import ollama
 
 from app.core.config import get_settings
 
