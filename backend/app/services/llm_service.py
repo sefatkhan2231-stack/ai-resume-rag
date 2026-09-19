@@ -53,7 +53,7 @@ def generate_with_gemini(
             system_instruction=system_prompt,
             temperature=0,
             max_output_tokens=1000,
-
+            response_mime_type="application/json",
             automatic_function_calling=(
                 types.AutomaticFunctionCallingConfig(
                     disable=True
