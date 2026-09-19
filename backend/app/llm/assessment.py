@@ -27,6 +27,10 @@ MATCHED REQUIREMENTS or MISSING REQUIREMENTS.
         user_prompt=prompt,
     )
 
+    print("===== LLM ASSESSMENT RESPONSE =====")
+    print(content)
+    print("===== END LLM RESPONSE =====")
+
     content = content.strip()
 
     return json.loads(content)
