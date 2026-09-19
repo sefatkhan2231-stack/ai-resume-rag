@@ -1,16 +1,12 @@
 import json
-import ollama
 
-MODEL_NAME = "llama3.2"
+from app.services.llm_service import generate
+
 
 def generate_candidate_assessment(prompt: str) -> dict:
 
-    response = ollama.chat(
-        model=MODEL_NAME,
-        messages=[
-            {
-                "role": "system",
-                "content": """
+    content = generate(
+        system_prompt="""
 You are a strict resume screening assistant.
 
 Use ONLY the verified requirements provided by the user.
@@ -27,16 +23,10 @@ Do not invent experience.
 Do not mention any technology, skill, experience,
 or qualification unless it appears in the supplied
 MATCHED REQUIREMENTS or MISSING REQUIREMENTS.
-"""
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        options={"temperature": 0},
+""",
+        user_prompt=prompt,
     )
 
-    content = response["message"]["content"].strip()
+    content = content.strip()
 
     return json.loads(content)
