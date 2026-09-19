@@ -1,9 +1,7 @@
 import re
-import ollama
 
 from app.rag.retrieval import retrieve_and_rerank
-
-MODEL_NAME = "llama3.2"
+from app.services.llm_service import generate
 
 ALIASES = {
     "python programming": "Python",
@@ -87,13 +85,9 @@ TRUE
 or
 FALSE
 """
-    response = ollama.chat(
-        model=MODEL_NAME,
-        messages=[
-            {"role": "system", "content": "Return only TRUE or FALSE."},
-            {"role": "user", "content": prompt},
-        ],
-        options={"temperature": 0},
+    response = generate(
+        system_prompt="Return only TRUE or FALSE.",
+        user_prompt=prompt,
     )
     answer = response["message"]["content"].strip().upper()
     return answer == "TRUE"
