@@ -89,7 +89,7 @@ FALSE
         system_prompt="Return only TRUE or FALSE.",
         user_prompt=prompt,
     )
-    answer = response["message"]["content"].strip().upper()
+    answer = response.strip().upper()
     return answer == "TRUE"
 
 
