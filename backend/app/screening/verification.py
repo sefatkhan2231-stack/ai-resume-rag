@@ -126,16 +126,19 @@ def check_skill(skill: str, candidate_id: str = None) -> dict:
     if not evidence:
         return {"skill": original_skill, "normalized_skill": normalized_skill, "matched": False, "evidence": []}
 
+    evidence = select_best_evidence(evidence, max_results=1)
+
     verified_evidence = []
+
     for item in evidence:
         document = item["document"]
-        if exact_skill_match(normalized_skill, document) or verify_skill_llm(normalized_skill, document):
+
+        if exact_skill_match(normalized_skill, document):
             verified_evidence.append(item)
+            continue
 
-    if not verified_evidence:
-        return {"skill": original_skill, "normalized_skill": normalized_skill, "matched": False, "evidence": []}
-
-    evidence = select_best_evidence(verified_evidence)
+        if verify_skill_llm(normalized_skill, document):
+            verified_evidence.append(item)
 
     return {
         "skill": original_skill,
