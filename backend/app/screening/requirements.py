@@ -1,6 +1,41 @@
 import json
+import re
 
 from app.services.llm_service import generate
+
+
+class RequirementExtractionError(RuntimeError):
+    """Raised when the LLM response for job requirement extraction can't be parsed as JSON."""
+
+
+def _extract_json(content: str) -> dict:
+   
+    if not content or not content.strip():
+        raise RequirementExtractionError(
+            "LLM returned empty content while extracting job requirements."
+        )
+
+    text = content.strip()
+
+    # Strip ```json ... ``` or ``` ... ``` fences if present.
+    fence_match = re.search(r"```(?:json)?\s*(.*?)\s*```", text, re.DOTALL)
+    if fence_match:
+        text = fence_match.group(1).strip()
+
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as exc:
+        # Fall back to grabbing the first {...} block in case there's
+        # leading/trailing prose around the JSON.
+        brace_match = re.search(r"\{.*\}", text, re.DOTALL)
+        if brace_match:
+            try:
+                return json.loads(brace_match.group(0))
+            except json.JSONDecodeError:
+                pass
+        raise RequirementExtractionError(
+            f"Could not parse JSON from LLM response: {exc}. Raw content: {content[:500]!r}"
+        ) from exc
 
 def extract_job_requirements(job_description: str) -> dict:
     prompt = f"""
@@ -34,7 +69,7 @@ JOB DESCRIPTION:
         ),
         user_prompt=prompt,
     )
-    return json.loads(content)
+    return _extract_json(content)
 
 
 def flatten_requirements(requirements: dict) -> list:
