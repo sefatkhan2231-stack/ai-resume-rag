@@ -19,10 +19,9 @@ class Settings(BaseSettings):
     LLM_PROVIDER: str = "ollama"
     OLLAMA_MODEL: str = "llama3.2"
 
-    # --- Optional keys, kept for future providers ---
-    OPENAI_API_KEY: str | None = None
-    HF_TOKEN: str | None = None
-    HF_MODEL: str = "Qwen/Qwen2.5-7B-Instruct"
+    # Google Gemini
+    GEMINI_API_KEY: str | None = None
+    GEMINI_MODEL: str = "gemini-2.5-flash"
 
 
 @lru_cache
