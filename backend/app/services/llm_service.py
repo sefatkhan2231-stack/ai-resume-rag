@@ -1,16 +1,15 @@
-import json
-
+import ollama
 from google import genai
 from google.genai import types
-import ollama
 
 from app.core.config import get_settings
 
 settings = get_settings()
 
+
 def generate_with_ollama(
-        system_prompt: str,
-        user_prompt: str,
+    system_prompt: str,
+    user_prompt: str,
 ) -> str:
 
     response = ollama.chat(
@@ -31,6 +30,7 @@ def generate_with_ollama(
     )
 
     return response["message"]["content"]
+
 
 def generate_with_gemini(
     system_prompt: str,
@@ -53,8 +53,11 @@ def generate_with_gemini(
             system_instruction=system_prompt,
             temperature=0,
             max_output_tokens=1000,
-            automatic_function_calling=types.AutomaticFunctionCallingConfig(
-                disable=True
+
+            automatic_function_calling=(
+                types.AutomaticFunctionCallingConfig(
+                    disable=True
+                )
             ),
         ),
     )
@@ -66,9 +69,10 @@ def generate_with_gemini(
 
     return response.text
 
+
 def generate(
-        system_prompt: str,
-        user_prompt: str,
+    system_prompt: str,
+    user_prompt: str,
 ) -> str:
 
     if settings.LLM_PROVIDER == "gemini":
