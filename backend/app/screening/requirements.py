@@ -1,3 +1,4 @@
+import json
 from typing import TypedDict
 
 from app.services.llm_service import generate
@@ -9,6 +10,7 @@ class JobRequirements(TypedDict):
     frameworks: list[str]
     databases: list[str]
     soft_skills: list[str]
+
 
 response_schema = {
     "type": "object",
@@ -50,8 +52,7 @@ response_schema = {
         "frameworks",
         "databases",
         "soft_skills"
-    ],
-    "additionalProperties": False
+    ]
 }
 
 
@@ -90,8 +91,6 @@ JOB DESCRIPTION:
     print("===== REQUIREMENTS LLM RESPONSE =====")
     print(content)
     print("===== END REQUIREMENTS RESPONSE =====")
-
-    import json
 
     return json.loads(content)
 
