@@ -54,6 +54,8 @@ def generate_with_gemini(
             system_instruction=system_prompt,
             temperature=0,
             max_output_tokens=1000,
+            response_mime_type="application/json",
+            response_schema=response_schema,
             automatic_function_calling=(
                 types.AutomaticFunctionCallingConfig(
                     disable=True
@@ -61,10 +63,6 @@ def generate_with_gemini(
             ),
         ),
     )
-
-    if response_schema:
-        config.response_mime_type = "application/json"
-        config.response_schema = response_schema
 
     response = client.models.generate_content(
         model=settings.GEMINI_MODEL,
