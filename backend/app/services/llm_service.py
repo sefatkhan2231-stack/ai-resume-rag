@@ -63,7 +63,7 @@ def generate_with_gemini(
     )
 
     if response_schema:
-        config.response_mime_type = "application/json"
+        config.config.response_mime_type = "application/json"
         config.response_schema = response_schema
 
     response = client.models.generate_content(
