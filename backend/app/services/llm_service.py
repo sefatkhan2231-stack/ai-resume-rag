@@ -47,7 +47,7 @@ def generate_with_gemini(
         api_key=settings.GEMINI_API_KEY
     )
 
-    config = client.models.generate_content(
+    response = client.models.generate_content(
         model=settings.GEMINI_MODEL,
         contents=user_prompt,
         config=types.GenerateContentConfig(
@@ -62,12 +62,6 @@ def generate_with_gemini(
                 )
             ),
         ),
-    )
-
-    response = client.models.generate_content(
-        model=settings.GEMINI_MODEL,
-        contents=user_prompt,
-        config=config,
     )
 
     if not response.text:
