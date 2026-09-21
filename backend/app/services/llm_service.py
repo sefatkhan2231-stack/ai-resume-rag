@@ -46,7 +46,7 @@ def generate_with_ollama(
 
 @retry(
     stop=stop_after_attempt(3),
-    wait=wait_exponential(multiplier=1, min=2, max=10),
+    wait=wait_exponential(multiplier=1, min=2, max=20),
     retry=retry_if_exception_type(genai_errors.ServerError),
     reraise=True,
 )
