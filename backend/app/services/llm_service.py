@@ -24,7 +24,11 @@ def generate_with_ollama(
     user_prompt: str,
 ) -> str:
 
-    response = ollama.chat(
+    client = ollama.Client(
+        host=settings.OLLAMA_HOST
+    )
+
+    response = client.chat(
         model=settings.OLLAMA_MODEL,
         messages=[
             {
