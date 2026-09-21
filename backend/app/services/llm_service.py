@@ -1,10 +1,21 @@
+import logging
+
 import ollama
 from google import genai
+from google.genai import errors as genai_errors
 from google.genai import types
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 from app.core.config import get_settings
 
 settings = get_settings()
+
+logger = logging.getLogger(__name__)
 
 
 def generate_with_ollama(
@@ -32,6 +43,12 @@ def generate_with_ollama(
     return response["message"]["content"]
 
 
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    retry=retry_if_exception_type(genai_errors.ServerError),
+    reraise=True,
+)
 def generate_with_gemini(
     system_prompt: str,
     user_prompt: str,
@@ -64,6 +81,18 @@ def generate_with_gemini(
         ),
     )
 
+    if not response.candidates:
+        raise RuntimeError(
+            "Gemini returned no candidates."
+        )
+
+    finish_reason = response.candidates[0].finish_reason
+    if finish_reason == "MAX_TOKENS":
+        raise RuntimeError(
+            "Gemini response was truncated (hit max_output_tokens). "
+            "Increase max_output_tokens or shorten the input."
+        )
+
     if not response.text:
         raise RuntimeError(
             "Gemini returned an empty response."
@@ -79,11 +108,18 @@ def generate(
 ) -> str:
 
     if settings.LLM_PROVIDER == "gemini":
-        return generate_with_gemini(
-            system_prompt,
-            user_prompt,
-            response_schema=response_schema,
-        )
+        try:
+            return generate_with_gemini(
+                system_prompt,
+                user_prompt,
+                response_schema=response_schema,
+            )
+        except genai_errors.ServerError:
+            logger.exception(
+                "Gemini request failed after retries "
+                "(provider unavailable)."
+            )
+            raise
 
     return generate_with_ollama(
         system_prompt,
