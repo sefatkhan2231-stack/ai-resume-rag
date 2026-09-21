@@ -18,10 +18,7 @@ class Settings(BaseSettings):
     # --- LLM ---
     LLM_PROVIDER: str = "ollama"
     OLLAMA_MODEL: str = "llama3.2"
-
-    # Google Gemini
-    GEMINI_API_KEY: str | None = None
-    GEMINI_MODEL: str = "gemini-3.6-flash"
+    OLLAMA_HOST: str = "http://localhost:11434"
 
 
 @lru_cache
