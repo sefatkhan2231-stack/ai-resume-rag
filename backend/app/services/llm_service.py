@@ -1,5 +1,6 @@
 import logging
 
+from fastapi import HTTPException
 import ollama
 from google import genai
 from google.genai import errors as genai_errors
@@ -114,12 +115,15 @@ def generate(
                 user_prompt,
                 response_schema=response_schema,
             )
-        except genai_errors.ServerError:
+        except genai_errors.ServerError as e:
             logger.exception(
                 "Gemini request failed after retries "
                 "(provider unavailable)."
             )
-            raise
+            raise HTTPException(
+                status_code=503,
+                detail="The AI service is temporarily unavailable. Please try again in a moment.",
+            ) from e
 
     return generate_with_ollama(
         system_prompt,
