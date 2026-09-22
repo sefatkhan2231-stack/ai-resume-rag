@@ -16,9 +16,14 @@ class Settings(BaseSettings):
     DATABASE_PATH: str = "./storage/app.db"
 
     # --- LLM ---
-    LLM_PROVIDER: str = "ollama"
+    LLM_PROVIDER: str = "groq"
     OLLAMA_MODEL: str = "smollm2:135m"
-    OLLAMA_HOST: str = "http://ollama.railway.internal:11434"
+    OLLAMA_HOST: str = "http://junction.proxy.rlwy.net:25199"
+
+    # Groq
+    GROQ_API_KEY: str = ""
+    GROQ_MODEL: str = "llama-3.1-8b-instant"
+    GROQ_HOST: str = "https://api.groq.com/openai/v1"
 
 
 @lru_cache

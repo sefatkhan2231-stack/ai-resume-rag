@@ -1,12 +1,45 @@
 import logging
 
 import ollama
+import requests
 
 from app.core.config import get_settings
 
 settings = get_settings()
 
 logger = logging.getLogger(__name__)
+
+
+def generate_with_groq(
+    system_prompt: str,
+    user_prompt: str,
+) -> str:
+
+    response = requests.post(
+        f"{settings.GROQ_HOST}/chat/completions",
+        headers={
+            "Authorization": f"Bearer {settings.GROQ_API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": settings.GROQ_MODEL,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": system_prompt,
+                },
+                {
+                    "role": "user",
+                    "content": user_prompt,
+                },
+            ],
+            "temperature": 0,
+        },
+        timeout=30,
+    )
+    response.raise_for_status()
+
+    return response.json()["choices"][0]["message"]["content"]
 
 
 def generate_with_ollama(
@@ -44,7 +77,16 @@ def generate(
     response_schema=None,
 ) -> str:
 
-    return generate_with_ollama(
-        system_prompt,
-        user_prompt,
-    )
+    if settings.LLM_PROVIDER == "groq":
+        return generate_with_groq(
+            system_prompt,
+            user_prompt,
+        )
+
+    if settings.LLM_PROVIDER == "ollama":
+        return generate_with_ollama(
+            system_prompt,
+            user_prompt,
+        )
+
+    raise ValueError(f"Unknown LLM_PROVIDER: {settings.LLM_PROVIDER!r}")
