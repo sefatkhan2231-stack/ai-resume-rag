@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     # --- LLM ---
     LLM_PROVIDER: str = "ollama"
     OLLAMA_MODEL: str = "smollm2:135m"
-    OLLAMA_HOST: str = "http://localhost:11434"
+    OLLAMA_HOST: str = "http://ollama.railway.internal:11434"
 
 
 @lru_cache
