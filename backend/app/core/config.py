@@ -20,9 +20,9 @@ class Settings(BaseSettings):
     OLLAMA_MODEL: str = "smollm2:135m"
     OLLAMA_HOST: str = "http://junction.proxy.rlwy.net:25199"
 
-    # Groq
-    GROQ_API_KEY: str | None = None
-    GROQ_MODEL: str = "llama-3.1-8b-instant"
+    # Groq12
+    GROQ_API_KEY: str = ""
+    GROQ_MODEL: str = "openai/gpt-oss-20b"
     GROQ_HOST: str = "https://api.groq.com/openai/v1"
 
 
