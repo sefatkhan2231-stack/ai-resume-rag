@@ -1,28 +1,63 @@
+import json
 import re
 
 from app.rag.retrieval import retrieve_and_rerank
-
-
-ALIASES = {
-    "python programming": "Python",
-    "python programming skills": "Python",
-
-    "sql databases": "SQL",
-    "sql database": "SQL",
-    "sql/database knowledge": "SQL",
-
-    "experience working with git and github": "Git and GitHub",
-
-    "good problem solving skills": "Problem solving",
-}
+from app.services.llm_service import generate
 
 
 SUBSTRING_OK = {}
 
 
+_NORMALIZE_CACHE: dict[str, str] = {}
+
+NORMALIZE_SCHEMA = {
+    "name": "normalized_skill",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "canonical_skill": {"type": "string"},
+        },
+        "required": ["canonical_skill"],
+        "additionalProperties": False,
+    },
+}
+
+
 def normalize_requirement(requirement: str) -> str:
     key = requirement.strip().lower()
-    return ALIASES.get(key, requirement)
+
+    if not key:
+        return requirement
+
+    if key in _NORMALIZE_CACHE:
+        return _NORMALIZE_CACHE[key]
+
+    content = generate(
+        system_prompt=(
+            "You rewrite a job requirement phrase into the short, "
+            "canonical name it's normally known by (a specific "
+            "language, tool, framework, database, or skill). "
+            "Strip filler words like 'experience with', 'knowledge "
+            "of', 'skills', 'proficiency in'. Keep the result as a "
+            "resume would state it, e.g. 'python programming skills' "
+            "-> 'Python', 'sql databases' -> 'SQL', 'good problem "
+            "solving skills' -> 'Problem solving'. Return the phrase "
+            "unchanged if it is already canonical."
+        ),
+        user_prompt=requirement,
+        response_schema=NORMALIZE_SCHEMA,
+    )
+
+    try:
+        canonical = json.loads(content)["canonical_skill"].strip()
+        if not canonical:
+            canonical = requirement
+    except (json.JSONDecodeError, KeyError, TypeError):
+        canonical = requirement
+
+    _NORMALIZE_CACHE[key] = canonical
+
+    return canonical
 
 
 def normalize_text(text: str) -> str:
