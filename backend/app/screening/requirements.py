@@ -11,6 +11,27 @@ class JobRequirements(TypedDict):
     databases: list[str]
     soft_skills: list[str]
 
+JOB_REQUIREMENTS_SCHEMA = {
+    "name": "job_requirements",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "skills": {"type": "array", "items": {"type": "string"}},
+            "tools": {"type": "array", "items": {"type": "string"}},
+            "frameworks": {"type": "array", "items": {"type": "string"}},
+            "databases": {"type": "array", "items": {"type": "string"}},
+            "soft_skills": {"type": "array", "items": {"type": "string"}},
+        },
+        "required": [
+            "skills",
+            "tools",
+            "frameworks",
+            "databases",
+            "soft_skills",
+        ],
+        "additionalProperties": False,
+    },
+}
 
 def extract_job_requirements(
     job_description: str
@@ -40,7 +61,8 @@ JOB DESCRIPTION:
             "You extract structured job requirements "
             "from job descriptions."
         ),
-        user_prompt=prompt
+        user_prompt=prompt,
+        response_schema=JOB_REQUIREMENTS_SCHEMA,
     )
 
     print("===== REQUIREMENTS LLM RESPONSE =====")
