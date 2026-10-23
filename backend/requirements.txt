@@ -6,3 +6,4 @@ sqlalchemy
 pypdf
 chromadb
 fastembed
+ollama
