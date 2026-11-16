@@ -9,6 +9,23 @@
   ollama pull llama3.2
 ```
 
+## 📸 Screenshots
+
+### Home Page
+![Home Page](screenshots/home.png)
+
+### Movie Search
+![Movie Search](screenshots/search.png)
+
+### Personalized Recommendations
+![Recommendations](screenshots/recommendations.png)
+
+### Movie Detail Page
+![Movie Detail](screenshots/movie-detail.png)
+
+### Watchlist
+![Watchlist](screenshots/watchlist.png)
+
 ### Backend
 
 ```bash
