@@ -18,7 +18,7 @@
 ![Movie Search](screenshots/job-check.png)
 
 ### Result
-![Recommendations](screenshots/result.png)
+![Recommendations](screenshots/resume-result.png)
 
 ### History Page
 ![Movie Detail](screenshots/history.png)
