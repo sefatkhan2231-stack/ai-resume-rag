@@ -12,19 +12,16 @@
 ## 📸 Screenshots
 
 ### Home Page
-![Home Page](screenshots/home.png)
+![Home Page](screenshots/ai-resume-home.png)
 
-### Movie Search
-![Movie Search](screenshots/search.png)
+### Check Search
+![Movie Search](screenshots/job-check.png)
 
-### Personalized Recommendations
-![Recommendations](screenshots/recommendations.png)
+### Result
+![Recommendations](screenshots/result.png)
 
-### Movie Detail Page
-![Movie Detail](screenshots/movie-detail.png)
-
-### Watchlist
-![Watchlist](screenshots/watchlist.png)
+### History Page
+![Movie Detail](screenshots/history.png)
 
 ### Backend
 
